@@ -1,0 +1,63 @@
+{
+    "name": "kanidm-stack Workspace (Archlinux)",
+    "build": {
+        "dockerfile": "Dockerfile",
+        "context": ".",
+        "args": {
+            "VARIANT": "latest"
+        }
+    },
+    "workspaceFolder": "/workspace/kanidm-stack",
+    "workspaceMount": "source=kanidm-stack-workspace,target=/workspace/kanidm-stack,type=volume",
+    "mounts": [
+        "source=kanidm-stack-home,target=/home/vscode,type=volume"
+    ],
+    "remoteUser": "vscode",
+    "runArgs": [
+        "--name", "kanidm-stack-workspace",
+        "--network=kanidm-stack-workspace-network"
+    
+    ],
+    "features": {
+        "ghcr.io/bartventer/arch-devcontainer-features/common-utils:1": {
+            "username": "vscode",
+            "additionalPackages": "base-devel",
+            "installZsh": true,
+            "installOhMyZsh": true,
+            "configureZshAsDefaultShell": true
+        },
+        "ghcr.io/bartventer/arch-devcontainer-features/docker-outside-of-docker:1": {},
+        "ghcr.io/zyrakq/arch-devcontainer-features/clone-repo:1": {
+            "repoUrl": "git@github.com:zyrakq/kanidm-stack.git",
+            "targetDir": "/workspace/kanidm-stack"
+        }
+    },
+    "initializeCommand": [
+        "bash", "-c", "docker network ls | grep -q kanidm-stack-workspace-network || docker network create kanidm-stack-workspace-network"
+    ],
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                // VSCode
+                "vscode-icons-team.vscode-icons",
+                "aaron-bond.better-comments",
+
+                // Docker
+                "ms-azuretools.vscode-docker",
+
+                // Git
+                "eamodio.gitlens",
+                "codezombiech.gitignore",
+
+                // Toml
+                "tamasfe.even-better-toml",
+
+
+                "kilocode.kilo-code"
+            ],
+            "settings": {
+                "workbench.iconTheme": "vscode-icons"
+            }
+        }
+    }
+}

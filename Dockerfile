@@ -1,0 +1,1 @@
+FROM kanidm/server:latest
