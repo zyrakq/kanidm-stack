@@ -1,0 +1,50 @@
+services:
+  cert-generator:
+    image: alpine:latest
+    volumes:
+      - openssl-certs:/certs
+      - cert-generator-scripts:/scripts
+    working_dir: /certs
+    command: |
+      sh -c "
+        if [ ! -f /certs/server.crt ]; then
+          echo 'Generating SSL certificates...'
+          apk add --no-cache openssl
+          
+          # Generate private key
+          openssl genrsa -out server.key 2048
+          
+          # Create CSR
+          openssl req -new -key server.key -out server.csr -subj '/C=RU/ST=Moscow/L=Moscow/O=Company/CN=localhost'
+          
+          # Generate self-signed certificate
+          openssl x509 -req -days 365 -in server.csr -signkey server.key -out server.crt
+          
+          # Set file permissions
+          chmod 644 server.crt
+          chmod 600 server.key
+          
+          echo 'SSL certificates generated successfully!'
+        else
+          echo 'SSL certificates already exist, skipping generation.'
+        fi
+      "
+    networks:
+      - kanidmd-network
+
+  kanidmd:
+    volumes:
+      - openssl-certs:/certs
+    depends_on:
+      - cert-generator
+    networks:
+      - kanidmd-network
+
+volumes:
+  openssl-certs:
+    name: openssl-certs
+    external: true
+
+networks:
+  kanidmd-network:
+    name: kanidmd-network

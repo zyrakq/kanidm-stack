@@ -1,0 +1,22 @@
+services:
+  kanidmd:
+    volumes:
+      - letsencrypt-certs:/certs
+    environment:
+      VIRTUAL_PORT: ${VIRTUAL_PORT:-8443}
+      VIRTUAL_HOST: ${VIRTUAL_HOST}
+      LETSENCRYPT_HOST: ${LETSENCRYPT_HOST}
+      LETSENCRYPT_EMAIL: ${LETSENCRYPT_EMAIL}
+      VIRTUAL_PROTO: ${VIRTUAL_PROTO:-https}
+    networks:
+      - letsencrypt-network
+
+volumes:
+  letsencrypt-certs:
+    name: letsencrypt-certs
+    external: true
+
+networks:
+  letsencrypt-network:
+    name: letsencrypt-network
+    external: true

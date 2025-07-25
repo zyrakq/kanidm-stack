@@ -1,0 +1,9 @@
+services:
+  kanidmd:
+    environment:
+    networks:
+      - kanidm-stack-workspace-network
+
+networks:
+  kanidm-stack-workspace-network:
+    external: true
