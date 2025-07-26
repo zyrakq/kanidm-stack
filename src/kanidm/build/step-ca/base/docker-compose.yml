@@ -1,10 +1,11 @@
 services:
   kanidmd:
-    image: kanidm/server:latest
+    image: kanidm/server:${KANIDM_VERSION:-latest}
     container_name: kanidmd
     restart: always
     volumes:
       - kanidm-data:/data
+      - step-ca-certs:/certs
     environment:
       KANIDM_VERSION: ${KANIDM_VERSION:-2}
       KANIDM_LOG_LEVEL: ${KANIDM_LOG_LEVEL:-info}
@@ -14,7 +15,25 @@ services:
       KANIDM_DB_PATH: ${KANIDM_DB_PATH:-/data/kanidm.db}
       KANIDM_TLS_CHAIN: ${KANIDM_TLS_CHAIN}
       KANIDM_TLS_KEY: ${KANIDM_TLS_KEY}
-
+      VIRTUAL_PORT: ${VIRTUAL_PORT:-8443}
+      VIRTUAL_HOST: ${VIRTUAL_HOST}
+      LETSENCRYPT_HOST: ${LETSENCRYPT_HOST}
+      LETSENCRYPT_EMAIL: ${LETSENCRYPT_EMAIL}
+      VIRTUAL_PROTO: ${VIRTUAL_PROTO:-https}
+    networks:
+      - kanidm-network
+      - step-ca-network
+networks:
+  kanidm-network:
+    name: kanidm-network
+    driver: bridge
+  step-ca-network:
+    name: step-ca-network
+    external: true
 volumes:
   kanidm-data:
     name: kanidm-data
+    driver: local
+  step-ca-certs:
+    name: step-ca-certs
+    external: true

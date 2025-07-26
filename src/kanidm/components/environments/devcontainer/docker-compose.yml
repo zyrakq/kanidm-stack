@@ -1,0 +1,8 @@
+services:
+  kanidmd:
+    networks:
+      - kanidm-workspace-network
+
+networks:
+  kanidm-workspace-network:
+    external: true

@@ -1,4 +1,4 @@
 services:
   kanidmd:
     ports:
-      - 8443:8443
+      - "8443:8443"

@@ -1,0 +1,29 @@
+services:
+  kanidmd:
+    image: kanidm/server:${KANIDM_VERSION:-latest}
+    container_name: kanidmd
+    restart: always
+    volumes:
+      - kanidm-data:/data
+    environment:
+      KANIDM_VERSION: ${KANIDM_VERSION:-2}
+      KANIDM_LOG_LEVEL: ${KANIDM_LOG_LEVEL:-info}
+      KANIDM_BINDADDRESS: ${KANIDM_BINDADDRESS:-[::]:8443}
+      KANIDM_DOMAIN: ${KANIDM_DOMAIN:-localhost}
+      KANIDM_ORIGIN: ${KANIDM_ORIGIN:-https://localhost:8443}
+      KANIDM_DB_PATH: ${KANIDM_DB_PATH:-/data/kanidm.db}
+      KANIDM_TLS_CHAIN: ${KANIDM_TLS_CHAIN}
+      KANIDM_TLS_KEY: ${KANIDM_TLS_KEY}
+    networks:
+      - kanidm-network
+      - kanidm-workspace-network
+networks:
+  kanidm-network:
+    name: kanidm-network
+    driver: bridge
+  kanidm-workspace-network:
+    external: true
+volumes:
+  kanidm-data:
+    name: kanidm-data
+    driver: local
