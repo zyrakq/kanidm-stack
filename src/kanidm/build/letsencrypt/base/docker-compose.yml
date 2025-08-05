@@ -3,6 +3,8 @@ services:
     image: kanidm/server:${KANIDM_VERSION:-latest}
     container_name: kanidmd
     restart: always
+    # restart: no
+    # command: ["/sbin/kanidmd", "domain", "rename"]
     volumes:
       - kanidm-data:/data
       - letsencrypt-certs:/certs
