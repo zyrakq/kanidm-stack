@@ -2,12 +2,9 @@ services:
   kanidmd:
     image: kanidm/server:${KANIDM_VERSION:-latest}
     container_name: kanidmd
-    restart: always
+    restart: unless-stopped
     # restart: no
     # command: ["/sbin/kanidmd", "domain", "rename"]
-    volumes:
-      - kanidm-data:/data
-      - letsencrypt-certs:/certs
     environment:
       KANIDM_VERSION: ${KANIDM_VERSION:-2}
       KANIDM_LOG_LEVEL: ${KANIDM_LOG_LEVEL:-info}
@@ -15,13 +12,21 @@ services:
       KANIDM_DOMAIN: ${KANIDM_DOMAIN:-localhost}
       KANIDM_ORIGIN: ${KANIDM_ORIGIN:-https://localhost:8443}
       KANIDM_DB_PATH: ${KANIDM_DB_PATH:-/data/kanidm.db}
-      KANIDM_TLS_CHAIN: ${KANIDM_TLS_CHAIN}
-      KANIDM_TLS_KEY: ${KANIDM_TLS_KEY}
+      KANIDM_TLS_CHAIN: ${KANIDM_TLS_CHAIN:-/certs/${VIRTUAL_HOST}/fullchain.pem}
+      KANIDM_TLS_KEY: ${KANIDM_TLS_KEY:-/certs/${VIRTUAL_HOST}/key.pem}
       VIRTUAL_PORT: ${VIRTUAL_PORT:-8443}
       VIRTUAL_HOST: ${VIRTUAL_HOST}
       LETSENCRYPT_HOST: ${LETSENCRYPT_HOST}
       LETSENCRYPT_EMAIL: ${LETSENCRYPT_EMAIL}
       VIRTUAL_PROTO: ${VIRTUAL_PROTO:-https}
+    logging:
+      driver: "json-file"
+      options:
+        max-size: 10m
+        max-file: 3
+    volumes:
+      - kanidm-data:/data
+      - letsencrypt-certs:/certs
     networks:
       - kanidm-network
       - letsencrypt-network
@@ -37,5 +42,4 @@ volumes:
     name: kanidm-data
     driver: local
   letsencrypt-certs:
-    name: letsencrypt-certs
     external: true

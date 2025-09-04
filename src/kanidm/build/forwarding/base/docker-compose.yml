@@ -2,11 +2,9 @@ services:
   kanidmd:
     image: kanidm/server:${KANIDM_VERSION:-latest}
     container_name: kanidmd
-    restart: always
+    restart: unless-stopped
     # restart: no
     # command: ["/sbin/kanidmd", "domain", "rename"]
-    volumes:
-      - kanidm-data:/data
     environment:
       KANIDM_VERSION: ${KANIDM_VERSION:-2}
       KANIDM_LOG_LEVEL: ${KANIDM_LOG_LEVEL:-info}
@@ -16,6 +14,13 @@ services:
       KANIDM_DB_PATH: ${KANIDM_DB_PATH:-/data/kanidm.db}
       KANIDM_TLS_CHAIN: ${KANIDM_TLS_CHAIN}
       KANIDM_TLS_KEY: ${KANIDM_TLS_KEY}
+    logging:
+      driver: "json-file"
+      options:
+        max-size: 10m
+        max-file: 3
+    volumes:
+      - kanidm-data:/data
     networks:
       - kanidm-network
     ports:

@@ -1,19 +1,20 @@
 services:
   kanidmd:
-    volumes:
-      - step-ca-certs:/certs
     environment:
       VIRTUAL_PORT: ${VIRTUAL_PORT:-8443}
       VIRTUAL_HOST: ${VIRTUAL_HOST}
       LETSENCRYPT_HOST: ${LETSENCRYPT_HOST}
       LETSENCRYPT_EMAIL: ${LETSENCRYPT_EMAIL}
       VIRTUAL_PROTO: ${VIRTUAL_PROTO:-https}
+      KANIDM_TLS_CHAIN: ${KANIDM_TLS_CHAIN:-/certs/${VIRTUAL_HOST}/fullchain.pem}
+      KANIDM_TLS_KEY: ${KANIDM_TLS_KEY:-/certs/${VIRTUAL_HOST}/key.pem}
+    volumes:
+      - step-ca-certs:/certs
     networks:
       - step-ca-network
 
 volumes:
   step-ca-certs:
-    name: step-ca-certs
     external: true
 
 networks:
