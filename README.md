@@ -4,15 +4,15 @@ Complete Docker-based Kanidm deployment with SSL certificate management for prod
 
 ## 📦 Components
 
-### 🔑 [Kanidm Service](src/kanidm/)
+### 🔑 [Kanidm Service](app/)
 
 Identity and Access Management server with modular configuration system, multiple deployment modes, and comprehensive authentication capabilities.
 
-### 🌐 [Let's Encrypt Manager](src/ssl-automation/letsencrypt-manager/)
+### 🌐 [Let's Encrypt Manager](modules/ssl-automation/letsencrypt-manager/)
 
 Automatic SSL certificate generation and renewal using Let's Encrypt for production deployments with internet access.
 
-### 🔒 [Step CA Manager](src/ssl-automation/step-ca-manager/)
+### 🔒 [Step CA Manager](modules/ssl-automation/step-ca-manager/)
 
 Self-signed trusted certificate authority for virtual Docker networks without internet access. Automatically manages and distributes CA certificates within isolated environments.
 
