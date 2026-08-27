@@ -21,7 +21,7 @@ services:
         FROM ${IMAGE:-kanidm/server:latest}
         COPY --from=sleep-stage /src/cmd/sleep /bin/sleep
 
-        ENTRYPOINT ["/usr/bin/s6-sleep", "${START_DELAY}"]
+        ENTRYPOINT ["/bin/sleep", "${START_DELAY}"]
         CMD [ "/sbin/kanidmd", "server"]
     logging: *default-logging
     restart: unless-stopped
