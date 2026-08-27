@@ -38,9 +38,9 @@ services:
       KANIDM_TLS_KEY: ${KANIDM_TLS_KEY:-/certs/${VIRTUAL_HOST}/key.pem}
       VIRTUAL_PORT: ${VIRTUAL_PORT:-8443}
       VIRTUAL_HOST: ${VIRTUAL_HOST}
+      VIRTUAL_PROTO: ${VIRTUAL_PROTO:-https}
       LETSENCRYPT_HOST: ${LETSENCRYPT_HOST}
       LETSENCRYPT_EMAIL: ${LETSENCRYPT_EMAIL}
-      VIRTUAL_PROTO: ${VIRTUAL_PROTO:-https}
     volumes:
       - kanidm-data:/data
       - letsencrypt-certs:/certs
