@@ -1,11 +1,54 @@
+x-logging: &default-logging
+  driver: json-file
+  options:
+    max-size: ${LOG_MAX_SIZE:-10m}
+    max-file: ${LOG_MAX_FILE:-3}
+    compress: ${LOG_COMPRESS:-true}
 services:
+  # kanidmd-init:
+  #   image: alpine:latest
+  #   command: ["sleep", "infinity"]
+  #   environment:
+  #     VIRTUAL_PORT: ${VIRTUAL_PORT:-8443}
+  #     VIRTUAL_HOST: ${VIRTUAL_HOST}
+  #     LETSENCRYPT_HOST: ${LETSENCRYPT_HOST}
+  #     LETSENCRYPT_EMAIL: ${LETSENCRYPT_EMAIL}
+  #     VIRTUAL_PROTO: ${VIRTUAL_PROTO:-https}
   kanidmd:
-    image: kanidm/server:${KANIDM_VERSION:-latest}
+    image: kanidmd
     container_name: kanidmd
+    build:
+      context: .
+      dockerfile_inline: |
+        ARG S6_OVERLAY_VERSION=3.2.3.2
+        ARG ARCH=x86_64
+
+        FROM alpine:3.20 AS s6tools
+        RUN apk add --no-cache curl tar xz
+
+        ADD https://github.com/just-containers/s6-overlay/releases/download/v${S6_OVERLAY_VERSION}/s6-overlay-noarch.tar.xz /tmp
+        RUN tar -C / -Jxpf /tmp/s6-overlay-noarch.tar.xz
+
+        ADD https://github.com/just-containers/s6-overlay/releases/download/v${S6_OVERLAY_VERSION}/s6-overlay-${ARCH}.tar.xz /tmp
+        RUN tar -C / -Jxpf /tmp/s6-overlay-${ARCH}.tar.xz
+
+        ADD https://github.com/just-containers/s6-overlay/releases/download/v${S6_OVERLAY_VERSION}/s6-overlay-symlinks-noarch.tar.xz /tmp
+        RUN tar -C / -Jxpf /tmp/s6-overlay-symlinks-noarch.tar.xz
+
+        ADD https://github.com/just-containers/s6-overlay/releases/download/v${S6_OVERLAY_VERSION}/s6-overlay-symlinks-arch.tar.xz /tmp
+        RUN tar -C / -Jxpf /tmp/s6-overlay-symlinks-arch.tar.xz
+
+        FROM ${IMAGE:-kanidm/server:latest}
+        COPY --from=s6tools /usr/bin/s6-sleep /usr/bin/s6-sleep
+
+        ENTRYPOINT ["/usr/bin/s6-sleep", "${START_DELAY}"]
+        CMD [ "/sbin/kanidmd", "server"]
     restart: unless-stopped
+    logging: *default-logging
     # restart: no
     # command: ["/sbin/kanidmd", "domain", "rename"]
     environment:
+      START_DELAY: ${START_DELAY:-10}
       KANIDM_VERSION: ${KANIDM_VERSION:-2}
       KANIDM_LOG_LEVEL: ${KANIDM_LOG_LEVEL:-info}
       KANIDM_BINDADDRESS: ${KANIDM_BINDADDRESS:-[::]:8443}
@@ -14,11 +57,6 @@ services:
       KANIDM_DB_PATH: ${KANIDM_DB_PATH:-/data/kanidm.db}
       KANIDM_TLS_CHAIN: ${KANIDM_TLS_CHAIN}
       KANIDM_TLS_KEY: ${KANIDM_TLS_KEY}
-    logging:
-      driver: "json-file"
-      options:
-        max-size: 10m
-        max-file: 3
     volumes:
       - kanidm-data:/data
     networks:
