@@ -6,8 +6,8 @@ x-logging: &default-logging
     compress: ${LOG_COMPRESS:-true}
 services:
   kanidmd:
-    image: kanidmd
     container_name: kanidmd
+    image: kanidmd
     build:
       context: .
       dockerfile_inline: |

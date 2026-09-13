@@ -45,6 +45,16 @@ docker compose up --build -d
 
 Access: `https://localhost:8443` (for forwarding mode)
 
+## Get passwords
+
+```bash
+docker exec -it kanidmd kanidmd recover-account admin
+```
+
+```bash
+docker exec -it kanidmd kanidmd recover-account idm_admin
+```
+
 ## 🔧 Available Environments
 
 - **forwarding** - Development with port forwarding (port 8443)

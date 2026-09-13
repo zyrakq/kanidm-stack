@@ -1,0 +1,31 @@
+x-logging: &default-logging
+  driver: json-file
+  options:
+    max-size: ${LOG_MAX_SIZE:-10m}
+    max-file: ${LOG_MAX_FILE:-3}
+    compress: ${LOG_COMPRESS:-true}
+services:
+  kanidm-admin:
+    container_name: kanidm-admin
+    image: ${IMAGE:-kanidm-admin}
+    logging: *default-logging
+    restart: unless-stopped
+    environment:
+      APP_KANIDM__URL: ${APP_KANIDM__URL}
+      APP_KANIDM__CA_PATH: ${APP_KANIDM__CA_PATH}
+      APP_KANIDM__VERIFY_CA: ${APP_KANIDM__VERIFY_CA}
+      VIRTUAL_PORT: ${VIRTUAL_PORT}
+      VIRTUAL_HOST: ${VIRTUAL_HOST}
+      LETSENCRYPT_HOST: ${LETSENCRYPT_HOST}
+      LETSENCRYPT_EMAIL: ${LETSENCRYPT_EMAIL}
+    volumes:
+      - step-ca-certs:/certs
+    networks:
+      - step-ca-network
+volumes:
+  step-ca-certs:
+    external: true
+networks:
+  step-ca-network:
+    name: step-ca-network
+    external: true

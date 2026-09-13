@@ -1,0 +1,4 @@
+services:
+  kanidm-admin:
+    ports:
+      - "4000:4000"

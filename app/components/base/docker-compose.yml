@@ -7,8 +7,8 @@ x-logging: &default-logging
 
 services:
   kanidmd:
-    image: kanidmd
     container_name: kanidmd
+    image: kanidmd
     build:
       context: .
       dockerfile_inline: |
