@@ -49,4 +49,3 @@ networks:
 volumes:
   kanidm-data:
     name: kanidm-data
-    driver: local

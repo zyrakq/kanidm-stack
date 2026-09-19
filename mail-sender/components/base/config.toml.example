@@ -1,0 +1,3 @@
+uri = "https://kanidm.local"
+verify_ca = true
+verify_hostnames = true

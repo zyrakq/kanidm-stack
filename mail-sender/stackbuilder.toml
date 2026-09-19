@@ -1,0 +1,10 @@
+[paths]
+extensions_dirs = ["extensions"]
+
+[build]
+copy_additional_files = true
+env_file_patterns = [".env", "config.toml", "mail-sender.toml"]
+extensions = ["step-ca-trust"]
+
+[build.environments]
+available = ["entire"]

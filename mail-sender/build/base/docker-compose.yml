@@ -1,0 +1,30 @@
+x-logging: &default-logging
+  driver: json-file
+  options:
+    max-size: ${LOG_MAX_SIZE:-10m}
+    max-file: ${LOG_MAX_FILE:-3}
+    compress: ${LOG_COMPRESS:-true}
+services:
+  kanidm-mail-sender:
+    container_name: kanidm-mail-sender
+    image: kanidm-mail-sender
+    build:
+      context: .
+      dockerfile_inline: |
+        FROM ${IMAGE:-kanidm/tools:latest}
+        COPY config.toml mail-sender.toml /data/kanidm/
+    logging: *default-logging
+    restart: unless-stopped
+    user: 1000:1000
+    environment:
+      RUST_LOG: ${RUST_LOG:-info}
+      KANIDM_LOG_LEVEL: ${KANIDM_LOG_LEVEL:-info}
+    command: >
+      /sbin/kanidm-mail-sender -c /data/kanidm/config.toml -m /data/kanidm/mail-sender.toml
+
+    networks:
+      - kanidm-network
+networks:
+  kanidm-network:
+    name: ${KANIDM_NETWORK:-kanidm-network}
+    external: true

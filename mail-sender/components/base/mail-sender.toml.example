@@ -1,0 +1,18 @@
+token = "<service account token>"
+
+instance_display_name = "Kanidm Localhost"
+
+instance_url = "https://kanidm.local"
+
+mail_from_address = "kanidm@example.com"
+
+mail_reply_to_address = "tobias@example.com"
+
+mail_relay = "smtp://mailcrab.local:1025"
+
+mail_username = "kanidm@example.com"
+mail_password = ""
+
+# schedule = "*/5 * * * * * *"
+
+# mail_connect_timeout_seconds = 15

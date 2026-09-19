@@ -57,6 +57,5 @@ networks:
 volumes:
   kanidm-data:
     name: kanidm-data
-    driver: local
   step-ca-certs:
     external: true
