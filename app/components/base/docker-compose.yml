@@ -17,9 +17,17 @@ services:
         RUN git clone https://anongit.hacktivis.me/git/utils-std.git /src
         WORKDIR /src
         RUN ./configure && make LDSTATIC=-static cmd/sleep
+        
+        FROM alpine:latest AS override-stage
+        RUN --mount=type=bind,source=.,target=/context,ro \
+            mkdir -p /out && \
+            if [ -f /context/override.css ]; then \
+                cp /context/override.css /out/override.css; \
+            fi
 
         FROM ${IMAGE:-kanidm/server:latest}
         COPY --from=sleep-stage /src/cmd/sleep /bin/sleep
+        COPY --from=override-stage /out/ /hpkg/
 
         ENTRYPOINT ["/bin/sleep", "${START_DELAY}"]
         CMD [ "/sbin/kanidmd", "server"]
