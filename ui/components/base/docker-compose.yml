@@ -8,10 +8,17 @@ x-logging: &default-logging
 services:
   kanidm-admin:
     container_name: kanidm-admin
-    image: ${IMAGE:-kanidm-admin}
+    image: ${IMAGE:-ghcr.io/zyrakq/kanidm-admin:v1.0.0}
     logging: *default-logging
     restart: unless-stopped
     environment:
       APP_KANIDM__URL: ${APP_KANIDM__URL}
       APP_KANIDM__CA_PATH: ${APP_KANIDM__CA_PATH}
       APP_KANIDM__VERIFY_CA: ${APP_KANIDM__VERIFY_CA}
+      APP_CUSTOMIZATION__PAGE__ENABLED: ${APP_CUSTOMIZATION__PAGE__ENABLED:-false}
+    volumes:
+      - kanidm-admin-customization:/workspace/app/customization
+
+volumes:
+  kanidm-admin-customization:
+    name: kanidm-admin-customization
